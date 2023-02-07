@@ -1,1 +1,1 @@
-# EIA2-Endabgabe-WiSe2022/23
+# EIA2-EndabgabeWiSe2022/23
