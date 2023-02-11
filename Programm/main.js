@@ -2,41 +2,43 @@
 var Fireworks;
 (function (Fireworks) {
     //Find elements with interactive features
-    let colorpicker;
-    let sizepicker;
-    let custombutton;
+    let form;
     let savebutton;
-    let savedbutton;
-    let savedlist;
     let canvas;
     let crc2;
-    //booleans to determine if costumized settings want to be tested
-    let custombuttonclicked;
     window.addEventListener("load", handleLoad);
-    function handleLoad(_event) {
-        console.log("handleLoad");
-        // custombutton = <HTMLButtonElement>document.querySelector("#custombutton");
-        // custombutton.addEventListener("click", toggleTest);
+    async function handleLoad(_event) {
+        //Daten von Server abrufen bevor das Programm weiter läuft
+        /*let response: Response = await fetch ("Data.json");
+        let list: string = await response.text();
+        let data: Data = JSON.parse(list);
+        console.log(data)*/
         savebutton = document.querySelector("#savebutton");
         savebutton.addEventListener("click", saveFirework);
-        // savedbutton = <HTMLButtonElement>document.querySelector("#savedbutton");
-        //savedbutton.addEventListener("click", toggleTest);
-        savedlist = document.querySelector("div#saved");
-        savedlist.addEventListener("click", chooseSaved);
+        form = document.querySelector("#form");
+        Fireworks.savedlist = document.querySelector("div#saved");
         canvas = document.querySelector("#sky");
         canvas.addEventListener("click", fireRocket);
+        Fireworks.colorpicker = document.querySelector("input#colorpicker");
+        Fireworks.sizepicker = document.querySelector("input#sizepicker");
+        if (!canvas)
+            return;
         crc2 = canvas.getContext("2d");
         crc2.fillStyle = "rgb(0,35,102)";
         crc2.fillRect(0, 0, canvas.width, canvas.height);
+        Fireworks.generateList(Fireworks.data);
         setInterval(drawBackground, 300);
-        custombuttonclicked = true;
     }
     function drawBackground() {
         crc2.fillStyle = "rgba(0,35,102, 0.5)";
         crc2.fillRect(0, 0, canvas.width, canvas.height);
     }
-    function saveFirework() {
+    async function saveFirework(_event) {
         console.log("saveFirework");
+        let formData = new FormData(form);
+        let query = new URLSearchParams(formData);
+        await fetch("fireworks.html?" + query.toString());
+        alert("Order sent!");
     }
     function fireRocket(_event) {
         let customs = getCustoms();
@@ -80,15 +82,9 @@ var Fireworks;
         crc2.restore();
     }
     function getCustoms() {
-        colorpicker = document.querySelector("input#colorpicker");
-        let customcolor = colorpicker.value;
-        sizepicker = document.querySelector("input#sizepicker");
-        let customsize = parseFloat(sizepicker.value);
+        let customcolor = Fireworks.colorpicker.value;
+        let customsize = parseFloat(Fireworks.sizepicker.value);
         return [customcolor, customsize];
-    }
-    function chooseSaved(_event) {
-    }
-    function displayList() {
     }
 })(Fireworks || (Fireworks = {}));
 //# sourceMappingURL=main.js.map

@@ -1,5 +1,6 @@
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #f5f5dc;
 }
 
 
@@ -17,9 +18,20 @@ main {
     justify-content: center;
 }
 
+fieldset {
+    border-color: #000000;
+    font-weight: 500;
+}
+legend {
+    font-weight: 900;
+}
+
+input#sizepicker {
+    -fx-background-color: red;
+}
 
 .custom {
-    background-color: red;
+    background-color: #2145EB;
     margin: 10px;
     padding: 15px;
     border-radius: 8px;
