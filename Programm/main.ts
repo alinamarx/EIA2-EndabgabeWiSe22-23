@@ -1,13 +1,15 @@
 namespace Fireworks {
 
-//Find elements with interactive features
-let form: HTMLFormElement
-export let colorpicker: HTMLInputElement 
-export let sizepicker: HTMLInputElement
-let savebutton: HTMLButtonElement
-export let savedlist: HTMLDivElement
-let canvas: HTMLCanvasElement
-let crc2: CanvasRenderingContext2D
+let form: HTMLFormElement;
+export let sizepicker: HTMLInputElement;
+export let colorpicker: HTMLInputElement;
+
+let savebutton: HTMLButtonElement;
+export let savedlist: HTMLDivElement;
+
+export let canvas: HTMLCanvasElement;
+export let crc2: CanvasRenderingContext2D;
+
 
 window.addEventListener("load", handleLoad)
 
@@ -21,31 +23,63 @@ async function handleLoad (_event: Event): Promise<void> {
     let data: Data = JSON.parse(list);    
     console.log(data)*/ 
 
-    savebutton = <HTMLButtonElement>document.querySelector("#savebutton");
-    savebutton.addEventListener("click", saveFirework);
     form = <HTMLFormElement>document.querySelector("#form");
-    savedlist = <HTMLDivElement>document.querySelector("div#saved");
-    canvas = <HTMLCanvasElement>document.querySelector("#sky");
-    canvas.addEventListener("click", fireRocket);
-
-    colorpicker = <HTMLInputElement>document.querySelector("input#colorpicker");
     sizepicker = <HTMLInputElement>document.querySelector("input#sizepicker");
+    colorpicker = <HTMLInputElement>document.querySelector("input#colorpicker");
+    savebutton = <HTMLButtonElement>document.querySelector("#savebutton");
+    savedlist = <HTMLDivElement>document.querySelector("div#saved");
+
+    canvas = <HTMLCanvasElement>document.querySelector("#sky");
+    crc2 = <CanvasRenderingContext2D>canvas.getContext("2d");
 
     if (!canvas)
         return;
 
-    crc2 = <CanvasRenderingContext2D>canvas.getContext("2d");
-    crc2.fillStyle = "rgb(0,35,102)";
+    canvas.addEventListener("click", prepareRocket);
+    savebutton.addEventListener("click", saveFirework);
+
+    crc2.fillStyle = "rgb(65,76,107)";
     crc2.fillRect(0, 0, canvas.width, canvas.height);
+    setInterval(drawBackground, 300);
 
     generateList(data);
-
-    setInterval(drawBackground, 300); 
+ 
 } 
 
-function drawBackground(): void {
-    crc2.fillStyle = "rgba(0,35,102, 0.5)";
+export function drawBackground(): void {
+    crc2.fillStyle = "rgba(2, 25, 69, 0.5)";
     crc2.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+export function generateList(_data: Data): void {
+    savedlist.innerHTML = ""
+
+    for (let rocket in _data.Rockets) {
+    
+        let size = _data.Rockets[rocket].size;
+        let color = _data.Rockets[rocket].color;
+
+        let breakElement: HTMLSpanElement = document.createElement("span");
+        breakElement.innerHTML = "<br>";
+
+        let listElement: HTMLButtonElement = document.createElement("button");
+        listElement.innerHTML = "Size: " + size + " & Color: " + color + "<br>";
+        listElement.setAttribute("size", size);
+        listElement.setAttribute("color", color);
+
+        savedlist.appendChild(listElement);
+        savedlist.appendChild(breakElement);
+
+        listElement.addEventListener("click", function() {
+            changeSettings(size, color);
+        });
+    }
+}
+
+function changeSettings(_size: string, _color: string): void {
+
+    colorpicker.value = _color;
+    sizepicker.value = _size;
 }
 
 async function saveFirework (_event: Event): Promise<void> {
@@ -54,71 +88,6 @@ async function saveFirework (_event: Event): Promise<void> {
     let query: URLSearchParams = new URLSearchParams (<any>formData);
     await fetch ("fireworks.html?" + query.toString());
     alert("Order sent!");
-}
-
-function fireRocket (_event: MouseEvent): void {
-
-    let customs: [string, number] = getCustoms();
-
-    //get position of click
-    let x: number = _event.offsetX;
-    let y: number = _event.offsetY; 
-
-    crc2.save();
-    crc2.scale(customs[1], customs[1]);
-
-    if (customs[1] == 2) {
-        x = x / 2;
-        y = y / 2;
-    } else if (customs[1] == 3) {
-        x = x / 3;
-        y = y / 3;
-    }
-    
-    drawFirework(x, y, customs[0]);
-
-    crc2.restore();
-    
-}
-
-function drawFirework (_x: number, _y: number, _color: string): void {
-
-    crc2.strokeStyle = _color;
-    crc2.fillStyle = _color;
-
-    let innerpath: Path2D = new Path2D();
-    innerpath.arc(_x, _y, 3.5, 0, 2 * Math.PI);
-    let middlepath: Path2D = new Path2D();
-    middlepath.ellipse(_x,_y - 24, 5, 14, 0, 0, 2 * Math.PI);
-    let outerpath: Path2D = new Path2D();
-    outerpath.ellipse(_x, _y - 60, 6, 18, 0, 0, 2 * Math.PI);
-
-    crc2.save();
-
-    for (let i: number = 0; i < 10; i++) {
-
-        crc2.stroke(innerpath);
-        crc2.fill(innerpath);
-        crc2.stroke(middlepath);
-        crc2.fill(middlepath);
-        crc2.stroke(outerpath);
-        crc2.fill(outerpath);
-        
-        crc2.translate(_x, _y); 
-        crc2.rotate( 40 * Math.PI / 180); 
-        crc2.translate(-_x,-_y); 
-
-    }
-
-    crc2.restore();
-}
-
-function getCustoms (): [string, number] {
-    let customcolor: string = colorpicker.value
-
-    let customsize: number = parseFloat(sizepicker.value)
-    
-    return [customcolor, customsize]
 }
 
 

@@ -1,7 +1,7 @@
 namespace Fireworks {
 
     export interface Rocket {
-        size: number;
+        size: string;
         color: string;
     }
     export interface Data {
@@ -13,9 +13,10 @@ namespace Fireworks {
     export let data: Data = {
     
         Rockets: [
-            { size: 1, color: "#ffffff" },
-            { size: 2, color: "#ffffff" },
-            { size: 3, color: "#ffffff" }
+            { size: "1", color: "#ffffff" },
+            { size: "2", color: "#ffffff" },
+            { size: "3", color: "#ffffff" },
+            { size: "2", color: "#000000"}
         ]
     }
 
