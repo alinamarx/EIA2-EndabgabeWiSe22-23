@@ -36,14 +36,13 @@ async function handleLoad (_event: Event): Promise<void> {
         return;
 
     canvas.addEventListener("click", prepareRocket);
-    savebutton.addEventListener("click", saveFirework);
+    savebutton.addEventListener("click", saveRocket);
 
     crc2.fillStyle = "rgb(65,76,107)";
     crc2.fillRect(0, 0, canvas.width, canvas.height);
     setInterval(drawBackground, 300);
 
     generateList(data);
- 
 } 
 
 export function drawBackground(): void {
@@ -77,17 +76,18 @@ export function generateList(_data: Data): void {
 }
 
 function changeSettings(_size: string, _color: string): void {
-
-    colorpicker.value = _color;
     sizepicker.value = _size;
+    colorpicker.value = _color;
 }
 
-async function saveFirework (_event: Event): Promise<void> {
-    console.log("saveFirework");
+async function saveRocket (_event: Event): Promise<void> {
+    console.log("save Rocket");
     let formData: FormData = new FormData(form);
     let query: URLSearchParams = new URLSearchParams (<any>formData);
     await fetch ("fireworks.html?" + query.toString());
     alert("Order sent!");
+
+    generateList(data);
 }
 
 

@@ -5,7 +5,7 @@ namespace Fireworks {
         color: string;
     }
     export interface Data {
-        [category: string]: Rocket[];
+        Rockets: Rocket[];
     }
 
     console.log("data.ts")

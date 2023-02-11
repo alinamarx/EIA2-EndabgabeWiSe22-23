@@ -20,7 +20,7 @@ var Fireworks;
         if (!Fireworks.canvas)
             return;
         Fireworks.canvas.addEventListener("click", Fireworks.prepareRocket);
-        savebutton.addEventListener("click", saveFirework);
+        savebutton.addEventListener("click", saveRocket);
         Fireworks.crc2.fillStyle = "rgb(65,76,107)";
         Fireworks.crc2.fillRect(0, 0, Fireworks.canvas.width, Fireworks.canvas.height);
         setInterval(drawBackground, 300);
@@ -51,15 +51,16 @@ var Fireworks;
     }
     Fireworks.generateList = generateList;
     function changeSettings(_size, _color) {
-        Fireworks.colorpicker.value = _color;
         Fireworks.sizepicker.value = _size;
+        Fireworks.colorpicker.value = _color;
     }
-    async function saveFirework(_event) {
-        console.log("saveFirework");
+    async function saveRocket(_event) {
+        console.log("save Rocket");
         let formData = new FormData(form);
         let query = new URLSearchParams(formData);
         await fetch("fireworks.html?" + query.toString());
         alert("Order sent!");
+        generateList(Fireworks.data);
     }
 })(Fireworks || (Fireworks = {}));
 //# sourceMappingURL=main.js.map
